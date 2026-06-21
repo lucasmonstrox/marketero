@@ -91,3 +91,6 @@ Visão completa e unificada de métricas de todos os canais — social, atendime
 ## Documentos relacionados
 
 - [concorrentes.md](./concorrentes.md) — análise de mercado e concorrentes.
+- [twitter.md](./twitter.md) — investigação da API do X (Twitter) para automação de respostas, engajamento, DM e remarketing.
+- [tiktok.md](./tiktok.md) — investigação da API do TikTok para automação (comentários, interações, remarketing, DMs, posting).
+- [facebook.md](./facebook.md) — investigação da API do Facebook para automação.
