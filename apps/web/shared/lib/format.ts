@@ -1,7 +1,16 @@
+import { tz } from "@date-fns/tz"
 import { format, formatDistance } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
 import { MOCK_NOW } from "./mock-time"
+
+/**
+ * Fuso fixo do produto. Datas absolutas são formatadas sempre em
+ * America/Sao_Paulo, independentemente do fuso do runtime (Node local vs
+ * Cloudflare Workers em UTC). Sem isso, o HTML do servidor diverge do cliente
+ * e dá hydration mismatch (React #418).
+ */
+const BR_TZ = tz("America/Sao_Paulo")
 
 /**
  * Formatação pt-BR (design-system §8.4). Data `dd/MM/yyyy`, número `1.234,56`,
@@ -42,17 +51,20 @@ export function formatPercent(fraction: number, fractionDigits = 0): string {
 
 /** 21/06/2026 */
 export function formatDate(date: DateInput): string {
-  return format(new Date(date), "dd/MM/yyyy", { locale: ptBR })
+  return format(new Date(date), "dd/MM/yyyy", { locale: ptBR, in: BR_TZ })
 }
 
 /** 21/06/2026 às 13:45 */
 export function formatDateTime(date: DateInput): string {
-  return format(new Date(date), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })
+  return format(new Date(date), "dd/MM/yyyy 'às' HH:mm", {
+    locale: ptBR,
+    in: BR_TZ,
+  })
 }
 
 /** 13:45 */
 export function formatTime(date: DateInput): string {
-  return format(new Date(date), "HH:mm", { locale: ptBR })
+  return format(new Date(date), "HH:mm", { locale: ptBR, in: BR_TZ })
 }
 
 /**
