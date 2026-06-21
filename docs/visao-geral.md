@@ -81,6 +81,20 @@ Visão completa e unificada de métricas de todos os canais — social, atendime
 | Falta de visão de métricas | Métricas unificadas de ponta a ponta |
 | RAG raso, sem contexto | GraphRAG (NodeRAG) com grafo de conhecimento |
 
+## Ideias e possíveis features
+
+> Itens ainda **não confirmados** — anotações de ideias para avaliação futura.
+
+### Web forms próprios integráveis com o Meta
+
+Construtor de **formulários web** do próprio Marketero para captura de leads — distinto dos **Instant Forms** nativos da Meta (Lead Ads), já investigados em [integracao-meta-lead-ads-crm.md](./integracao-meta-lead-ads-crm.md). Aqui o form é **hospedado pelo Marketero** (controle total da UI e dos dados).
+
+- **Dois modos de entrega:**
+  - **Via URL (hosted):** formulário publicado numa página própria/standalone, compartilhável em link de bio, campanhas, QR code, etc.
+  - **Embedável:** snippet (iframe/script) para incorporar em sites e lojas de terceiros.
+- **Integração com o Meta:** as submissões alimentam o mesmo **mini-CRM** (Lead → Contact → Pipeline) e podem ser devolvidas à Meta como conversões via **Conversions API (CAPI)** para otimização de campanha — reaproveitando o fluxo já descrito em [integracao-meta-lead-ads-crm.md](./integracao-meta-lead-ads-crm.md) (§6.6, Conversion Leads).
+- **A definir:** mecanismo exato de integração com o Meta (CAPI vs Pixel vs Custom Audiences), proteção anti-spam (captcha/anti-bot), mapeamento de campos → CRM e branding/multi-tenant.
+
 ## Glossário
 
 - **GraphRAG** — Retrieval-Augmented Generation sobre um grafo de conhecimento, em vez de apenas busca vetorial.
@@ -94,3 +108,5 @@ Visão completa e unificada de métricas de todos os canais — social, atendime
 - [twitter.md](./twitter.md) — investigação da API do X (Twitter) para automação de respostas, engajamento, DM e remarketing.
 - [tiktok.md](./tiktok.md) — investigação da API do TikTok para automação (comentários, interações, remarketing, DMs, posting).
 - [facebook.md](./facebook.md) — investigação da API do Facebook para automação.
+- [instagram.md](./instagram.md) — guia de automação da API do Instagram (comentários, DMs, publicação, webhooks, métricas).
+- [integracao-meta-lead-ads-crm.md](./integracao-meta-lead-ads-crm.md) — guia do fluxo Lead Ads → inscrição → mini-CRM (Instant Forms, webhook `leadgen`, Conversion Leads).
