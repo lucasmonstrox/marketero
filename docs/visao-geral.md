@@ -94,6 +94,7 @@ Construtor de **formulários web** do próprio Marketero para captura de leads �
   - **Embedável:** snippet (iframe/script) para incorporar em sites e lojas de terceiros.
 - **Integração com o Meta:** as submissões alimentam o mesmo **mini-CRM** (Lead → Contact → Pipeline) e podem ser devolvidas à Meta como conversões via **Conversions API (CAPI)** para otimização de campanha — reaproveitando o fluxo já descrito em [integracao-meta-lead-ads-crm.md](./integracao-meta-lead-ads-crm.md) (§6.6, Conversion Leads).
 - **A definir:** mecanismo exato de integração com o Meta (CAPI vs Pixel vs Custom Audiences), proteção anti-spam (captcha/anti-bot), mapeamento de campos → CRM e branding/multi-tenant.
+- **Tecnologia do construtor:** ver [editores-ui-page-form-builders.md](./editores-ui-page-form-builders.md) — investigação de page/form builders (Puck, Craft.js, Plasmic, SurveyJS, Formbricks, Form.io) e SDKs (Unlayer, GrapesJS Studio, Beefree). Recomendação inicial: **build** com Puck (páginas) + SurveyJS/Formbricks (formulários) pelo controle de dados e white-label sem custo recorrente.
 
 ## Glossário
 
@@ -110,3 +111,6 @@ Construtor de **formulários web** do próprio Marketero para captura de leads �
 - [facebook.md](./facebook.md) — investigação da API do Facebook para automação.
 - [instagram.md](./instagram.md) — guia de automação da API do Instagram (comentários, DMs, publicação, webhooks, métricas).
 - [integracao-meta-lead-ads-crm.md](./integracao-meta-lead-ads-crm.md) — guia do fluxo Lead Ads → inscrição → mini-CRM (Instant Forms, webhook `leadgen`, Conversion Leads).
+- [agentes-conversacionais-fsm.md](./agentes-conversacionais-fsm.md) — design do Agente como IA conversacional que conduz um Form via FSM/LangGraph (Agente = motor, Form = perguntas, Campanha = bind com override de form).
+- [workflows-visuais.md](./workflows-visuais.md) — investigação de packages para o editor visual de workflows/automações (React Flow, BPMN, motores de execução); base técnica para a automação de fluxos descrita em §1.
+- [editores-ui-page-form-builders.md](./editores-ui-page-form-builders.md) — investigação de editores visuais de UI (page builders e form builders) para o construtor de landing pages e formulários; base técnica para os "Web forms próprios".
