@@ -1,3 +1,10 @@
+---
+tipo: investigacao
+status: estável
+updated: 2026-06-21
+description: Benchmark de 22 concorrentes verificados (gestão social, atendimento WhatsApp/CRM, criativos com IA); diferencial defensável = unificação operacional + localização BR/LATAM.
+---
+
 # Marketero — Análise de Concorrentes
 
 O Marketero é uma plataforma SaaS de automação de marketing e atendimento inteligente para PMEs e agências, com foco no mercado brasileiro/LATAM. Sua proposta única é cruzar canais de venda, social e atendimento em um só "cérebro de IA" baseado em GraphRAG (NodeRAG) sobre um grafo de conhecimento — atendendo no WhatsApp, respondendo comentários, sugerindo respostas, agendando posts e criando criativos com IA (Nano Banana / Gemini). Este documento mapeia 22 perfis verificados de concorrentes, organizados em três grandes blocos: (a) gestão de redes sociais/agendamento, (b) atendimento conversacional/WhatsApp e CRM de mensageria, e (c) geração de conteúdo/criativos com IA e plataformas de marketing/GTM globais. A conclusão estratégica recorrente é que **nenhum concorrente combina, num único produto e bem localizado para o Brasil, os quatro pilares do Marketero: gestão social orgânica + criação de criativos com IA + atendimento WhatsApp-first + um cérebro de IA único cruzando venda, social e atendimento.** A ressalva mais importante: a SleekFlow já usa RAG híbrido graph-vector, então o GraphRAG não deve ser vendido como diferencial técnico isolado — o diferencial defensável é a **unificação operacional** (publicação + criativos + atendimento + venda) com localização BR/LATAM.

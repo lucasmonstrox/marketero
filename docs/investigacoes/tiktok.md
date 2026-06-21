@@ -1,3 +1,10 @@
+---
+tipo: investigacao
+status: estável
+updated: 2026-06-21
+description: Investigação das APIs do TikTok (Developers, API for Business, Shop): publicação orgânica, remarketing pago e atendimento; lacunas no social orgânico.
+---
+
 # TikTok — Investigacao de API para Automacao
 
 > Pesquisa baseada exclusivamente na documentacao oficial do TikTok (`developers.tiktok.com`, `business-api.tiktok.com`, `partner.tiktokshop.com` e paginas legais em `tiktok.com/legal`) e em verificacoes adversariais sobre os pontos mais sensiveis (comentarios organicos, DMs, automacao de engajamento, restricao de postagem publica). Termos tecnicos mantidos em ingles conforme convencao da plataforma.

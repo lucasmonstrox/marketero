@@ -1,6 +1,13 @@
+---
+tipo: investigacao
+status: estável
+updated: 2026-06-21
+description: Build vs buy de page/form builders embedáveis, multi-tenant e white-label; recomendação Puck + SurveyJS/Formbricks pela posse total dos dados.
+---
+
 # Editores de UI — Page Builders & Form Builders
 
-> Investigação sobre editores/construtores visuais de UI para criar **landing pages** e **formulários web** no contexto do Marketero, que pretende oferecer aos seus usuários um construtor **hosted (via URL)** e **embedável (iframe/script)**, **multi-tenant** e **white-label** (ver [visao-geral.md](./visao-geral.md) §"Web forms próprios integráveis com o Meta").
+> Investigação sobre editores/construtores visuais de UI para criar **landing pages** e **formulários web** no contexto do Marketero, que pretende oferecer aos seus usuários um construtor **hosted (via URL)** e **embedável (iframe/script)**, **multi-tenant** e **white-label** (ver [visao-geral.md](../produto/visao-geral.md) §"Web forms próprios integráveis com o Meta").
 >
 > Pesquisa multi-fonte com verificação adversarial (23 fontes, 109 claims extraídos, 25 verificados por votação 3-votos — 2 refutados e descartados). Preços e métricas de repositório são de **2025-2026** e mudam com frequência: **reconfirme nas páginas oficiais antes de decidir**.
 >

@@ -1,10 +1,17 @@
+---
+tipo: funcionalidade
+status: rascunho
+updated: 2026-06-21
+description: Design dos triggers e automações do funil Kanban estilo Bitrix24; invariante trigger-move vs robô-age, com GraphRAG roteando as transições.
+---
+
 # Marketero — Triggers e Automações do Kanban (estilo Bitrix24)
 
 > Funil em Kanban onde cada movimentação de card dispara automações: **triggers** movem o card para uma etapa, **robôs** executam ações ao entrar nela — com a IA GraphRAG roteando a transição. Invariante: **tudo que MOVE card é trigger; tudo que age DENTRO da etapa (inclusive armar um timer) é robô.**
 
 ## Visão geral
 
-O Marketero modela suas operações de marketing, vendas e atendimento como **funis em Kanban**: cada coluna é uma **etapa** do funil e cada card é um lead/contato/negócio que percorre essas etapas. O diferencial não é o board em si (concorrentes como BotConversa, Kommo e Clint já vendem CRM Kanban no WhatsApp — ver [concorrentes.md](./concorrentes.md)), mas o que move e o que age sobre os cards: um motor de **triggers e automações inspirado no Bitrix24**, onde a **classificação por GraphRAG/NodeRAG** preenche a decisão de transição.
+O Marketero modela suas operações de marketing, vendas e atendimento como **funis em Kanban**: cada coluna é uma **etapa** do funil e cada card é um lead/contato/negócio que percorre essas etapas. O diferencial não é o board em si (concorrentes como BotConversa, Kommo e Clint já vendem CRM Kanban no WhatsApp — ver [concorrentes.md](../investigacoes/concorrentes.md)), mas o que move e o que age sobre os cards: um motor de **triggers e automações inspirado no Bitrix24**, onde a **classificação por GraphRAG/NodeRAG** preenche a decisão de transição.
 
 A inspiração no Bitrix24 é explícita. O Bitrix24 separa a automação de funil em **duas primitivas complementares**, ambas configuradas **por etapa** do pipeline. O Marketero adota essa base, mas com uma correção importante: a dualidade "inbound vs. outbound" **não** mapeia 1:1, porque parte do que "move o card" não vem de um evento de canal externo e sim de um **timer interno**. Por isso adotamos **três categorias** de primitivas, não duas:
 
@@ -32,7 +39,7 @@ No Marketero, então:
 |-------|-----------|
 | **Pipeline (funil)** | Sequência ordenada de etapas para um tipo de operação (Vendas, Atendimento, Recuperação de carrinho, Conteúdo). Um tenant pode ter múltiplos pipelines independentes. |
 | **Etapa / Coluna** | Estado discreto do card dentro do pipeline (ex.: `new`, `contacted`, `qualified`, `won`, `lost`). Cada coluna do Kanban possui seu próprio conjunto de triggers e robôs. |
-| **Card / Negócio** | Item que percorre o funil. No Marketero é o **Contact deduplicado** (uma pessoa, N leads — ver [integracao-meta-lead-ads-crm.md](./integracao-meta-lead-ads-crm.md) §6.2/§6.4), com o snapshot imutável do Lead guardado como histórico. |
+| **Card / Negócio** | Item que percorre o funil. No Marketero é o **Contact deduplicado** (uma pessoa, N leads — ver [leads-crm.md](./leads-crm.md) §6.2/§6.4), com o snapshot imutável do Lead guardado como histórico. |
 | **Trigger (gatilho)** | Regra **inbound** ancorada numa etapa-destino: ao ocorrer um evento (externo **ou** sintético vindo de um timer), **move o card para** aquela etapa. **Tudo que move card é trigger.** |
 | **Robô que arma timer** | Robô outbound cujo efeito é criar um `scheduled_task`. Ao disparar, emite o **evento sintético** que aciona o trigger de movimentação. **Armar o timer é robô; o disparo que move é trigger.** |
 | **Regra de automação / Robô** | Regra **outbound** que **executa ações** quando o card entra (ou permanece) na etapa. |
@@ -69,13 +76,13 @@ Conforme a [Visão geral](#visão-geral), separamos os triggers por **origem do 
 
 > **`on-stay-duration` não é "trigger PULL".** A linha TIMER acima representa o **disparo** do timer (que move o card). O **armar** o timer é um robô (categoria 2), catalogado em [Robôs](#catálogo-de-ações--robôs-executados-na-etapa). Mantemos isso explícito para o leitor nunca confundir "armar" com "mover".
 
-> **Cobertura de venda (ciclo conteúdo→conversa→conversão).** Os triggers de **loja própria e marketplaces** fecham o ciclo da [visao-geral.md](./visao-geral.md) §4 (Integrações de venda): além do webhook de **saída** para ERP/loja/marketplace, existe agora o caminho de **entrada** — uma pergunta no Mercado Livre abre card em `contacted`; um pedido pago na loja move o card para `won` e dispara CAPI.
+> **Cobertura de venda (ciclo conteúdo→conversa→conversão).** Os triggers de **loja própria e marketplaces** fecham o ciclo da [visao-geral.md](../produto/visao-geral.md) §4 (Integrações de venda): além do webhook de **saída** para ERP/loja/marketplace, existe agora o caminho de **entrada** — uma pergunta no Mercado Livre abre card em `contacted`; um pedido pago na loja move o card para `won` e dispara CAPI.
 
 > O **trigger semântico de intenção** é o diferencial sobre o Bitrix24, que só faz *match* literal de palavra-chave. O Marketero combina `Track Customer Messages` (por keyword) com **classificação GraphRAG** — match literal **e** semântico.
 
 > **Movimento para trás (backward movement):** assim como no Bitrix24, cada trigger tem um flag **`allow_backward`** (default `false`) controlando se pode **trazer o card de volta** de uma etapa posterior. O critério é por **posição**: um trigger só move o card para trás (`stage.position` destino `<` posição atual) se `allow_backward = true`. Além disso, etapas com `stage.type ∈ {won, lost}` são **absorventes** para triggers de canal — um lead já em `won` que manda nova mensagem **não** volta para `new` automaticamente (gera, no máximo, um card novo de pós-venda em outro pipeline). Sob movimento para trás permitido, `on-exit`/`on-enter` disparam normalmente, mas a **histerese da reversão** (ver [Loop-guard](#loop-guard-parâmetros-e-justificativa)) e o `max_executions_per_card` por janela evitam o zigue-zague.
 
-> **Escopo multicanal (TikTok, X/Twitter).** O catálogo PUSH acima cobre IG/FB/WhatsApp e venda. **TikTok** (comentários, DMs — ver [tiktok.md](./tiktok.md)) e **X/Twitter** (replies, DMs — ver [twitter.md](./twitter.md)) **não estão no MVP**, mas serão plugados no **mesmo barramento** via os tipos genéricos `channel.message_received` / `channel.comment_received`, reaproveitando o modelo de comments/messages já existente. A omissão é deliberada e marcada — não silenciosa. Ver [Roadmap](#roadmap--faseamento-sugerido).
+> **Escopo multicanal (TikTok, X/Twitter).** O catálogo PUSH acima cobre IG/FB/WhatsApp e venda. **TikTok** (comentários, DMs — ver [tiktok.md](../investigacoes/tiktok.md)) e **X/Twitter** (replies, DMs — ver [twitter.md](../investigacoes/twitter.md)) **não estão no MVP**, mas serão plugados no **mesmo barramento** via os tipos genéricos `channel.message_received` / `channel.comment_received`, reaproveitando o modelo de comments/messages já existente. A omissão é deliberada e marcada — não silenciosa. Ver [Roadmap](#roadmap--faseamento-sugerido).
 
 ## Catálogo de Ações / Robôs (executados na etapa)
 
@@ -117,7 +124,7 @@ Robôs também são filhos de `(pipeline, etapa)` e cada um tem três parâmetro
 
 ## Modelo unificado evento → roteamento IA → ação
 
-O modelo descrito na [visao-geral.md](./visao-geral.md) (§"Automação de fluxos", l.33-45) — **evento → classificação → ação** — e o motor de triggers de Kanban são **a mesma máquina vista de dois ângulos**:
+O modelo descrito na [visao-geral.md](../produto/visao-geral.md) (§"Automação de fluxos", l.33-45) — **evento → classificação → ação** — e o motor de triggers de Kanban são **a mesma máquina vista de dois ângulos**:
 
 - O modelo da visão-geral é **event-driven (push)**: chega algo, a IA classifica, dispara ação.
 - O Kanban é **state-driven (pull)**: o card tem um estado (coluna) e regras por estado.
@@ -132,7 +139,7 @@ trigger (evento de canal externo OU disparo de timer)
          → [on-enter da etapa-destino] execução de ações  ← ROBÔS (responder, etiquetar, escalar, CAPI)
 ```
 
-A tabela `lead_pipeline` ([integracao-meta-lead-ads-crm.md](./integracao-meta-lead-ads-crm.md) §6.2) é a tabela de **ESTADO**; o **classificador de roteamento na ingestão** é o **ROTEADOR**; as ações on-enter são os **EFEITOS**. Assim, "regras + IA" são automações de Kanban onde, em vez de o usuário escrever cada `if/then`, **a IA preenche o ramo de decisão a partir do grafo** — mas o roteador e os robôs são componentes separados.
+A tabela `lead_pipeline` ([leads-crm.md](./leads-crm.md) §6.2) é a tabela de **ESTADO**; o **classificador de roteamento na ingestão** é o **ROTEADOR**; as ações on-enter são os **EFEITOS**. Assim, "regras + IA" são automações de Kanban onde, em vez de o usuário escrever cada `if/then`, **a IA preenche o ramo de decisão a partir do grafo** — mas o roteador e os robôs são componentes separados.
 
 > Eventos com pessoa identificável (DM, lead, form, pedido) **entram no board** como cards. Eventos sem card associado (comentário público, spam) podem agir **direto** (responder/ocultar) sem criar card.
 
@@ -216,7 +223,7 @@ flowchart TD
 
 > **CAPI — validação de `action_source`/`event_name`.** Para eventos de CRM/funil sem hit de site, o `action_source` correto é **`system_generated`** (a Meta lista explicitamente esse valor para "offline events… and CRM events"). Em `qualified` usamos o fluxo **Conversions API for CRM**, no qual o `event_name` é um **evento customizado configurado no Events Manager** (ex.: `qualified_lead`) — *não* o standard `Lead`; em `won` mapeamos para o standard **`Purchase`** (ou um custom `closed_won`, conforme a configuração de eventos do tenant). Validar sempre o par contra a doc atual antes de codar — ver Sources ao final.
 
-> **Timing do CAPI:** **não** disparar só em `won` (raro demais para o algoritmo aprender) — disparar também em `qualified` (~1/3 a 1/2 dos leads). Só para cards com `leadgen_id` (Lead Ads / IG Lead Ads); forms web próprios usam outro mecanismo (CAPI via dataset com `user_data` hasheado — **a definir** na [visao-geral.md](./visao-geral.md) §"Web forms"; ver [Decisões em aberto](#decisões-em-aberto)).
+> **Timing do CAPI:** **não** disparar só em `won` (raro demais para o algoritmo aprender) — disparar também em `qualified` (~1/3 a 1/2 dos leads). Só para cards com `leadgen_id` (Lead Ads / IG Lead Ads); forms web próprios usam outro mecanismo (CAPI via dataset com `user_data` hasheado — **a definir** na [visao-geral.md](../produto/visao-geral.md) §"Web forms"; ver [Decisões em aberto](#decisões-em-aberto)).
 
 ### Cenário 2 — Comentário com intenção de compra → DM automática → card no funil
 
@@ -289,7 +296,7 @@ channel_rate_state(tenant_id, channel, tokens NUMERIC, refilled_at,
 > - **`card_rule_counter`** dá morada ao contador de `max_executions_per_card` (não cabe em `automation_rule`, que é definição). Janela rolling via `window_start`.
 > - **`channel_rate_state`** persiste o token-bucket por `(tenant, canal)` citado nos riscos (antes sem tabela).
 
-> **Reuso:** `contact(id)` e `lead(leadgen_id)` já existem ([integracao-meta-lead-ads-crm.md](./integracao-meta-lead-ads-crm.md) §6.2). O `lead_pipeline.stage` atual (hoje um `TEXT` solto `new|contacted|qualified|won|lost`) vira **FK** para `stage(id)`, versionável por tenant. `scheduled_task` é o coração dos timers (delays/on-stay). `card.entered_stage_at` é o relógio do `on-stay-duration`.
+> **Reuso:** `contact(id)` e `lead(leadgen_id)` já existem ([leads-crm.md](./leads-crm.md) §6.2). O `lead_pipeline.stage` atual (hoje um `TEXT` solto `new|contacted|qualified|won|lost`) vira **FK** para `stage(id)`, versionável por tenant. `scheduled_task` é o coração dos timers (delays/on-stay). `card.entered_stage_at` é o relógio do `on-stay-duration`.
 
 ### Motor evento-orientado / fila
 
@@ -470,7 +477,7 @@ Critério explícito para decidir **agora**:
 
 ### CAPI para forms web próprios
 
-Citado em 3 lugares (Cenário 1, Catálogo, Roadmap) e **ainda não resolvido**. O mecanismo (CAPI via dataset com `user_data` hasheado, `action_source = website`) será especificado na [visao-geral.md](./visao-geral.md) §"Web forms". **Até lá**, os trechos que o mencionam ficam marcados como condicionais — não tratar o fluxo de forms web como pronto.
+Citado em 3 lugares (Cenário 1, Catálogo, Roadmap) e **ainda não resolvido**. O mecanismo (CAPI via dataset com `user_data` hasheado, `action_source = website`) será especificado na [visao-geral.md](../produto/visao-geral.md) §"Web forms". **Até lá**, os trechos que o mencionam ficam marcados como condicionais — não tratar o fluxo de forms web como pronto.
 
 ## Roadmap / faseamento sugerido
 
@@ -478,7 +485,7 @@ Citado em 3 lugares (Cenário 1, Catálogo, Roadmap) e **ainda não resolvido**.
 |------|--------|
 | **MVP** | Pipeline padrão = `lead_pipeline.stage` existente (Vendas/Atendimento). Triggers PUSH essenciais (leadgen, WhatsApp/DM recebido, comentário). **Triggers de venda** (pedido pago na loja própria → `won`). Outbox + polling (SKIP LOCKED) + pg-boss + cron externo para o scheduler. Robôs: responder GraphRAG, etiquetar, atribuir, mover card, esperar, armar timer. Classificador de roteamento na ingestão. CAPI on-enter em `qualified`/`won` (action_source `system_generated`). Idempotência (3 níveis) e loop-guard com `causation_chain`. |
 | **Fase 2** | `on-stay-duration` + scheduler de timers com jitter (speed-to-lead, reativação). **Triggers de marketplace** (Mercado Livre/OLX: pergunta → card; pedido pago → `won`). Builder no-code visual com `if/else` compilado para regras-por-etapa. Condições `AND`/`OR` + biblioteca de **templates prontos** (estilo RD/HubSpot). Rate-limiter por `(tenant, canal)`. Modo de teste/simulação. |
-| **Fase 3** | Trigger semântico `ai.intent_detected` maduro. Ação **sugerir produto do grafo**. Múltiplos pipelines por tenant + mover card **entre pipelines** (com stage de pouso + cancelamento de timers). Board de **Conteúdo** (Ideia→Criativo Nano Banana→Aprovação→Agendado→Publicado→Engajamento). **Canais TikTok e X/Twitter** plugados no mesmo barramento via `channel.message_received`/`channel.comment_received` (ver [tiktok.md](./tiktok.md), [twitter.md](./twitter.md)). |
+| **Fase 3** | Trigger semântico `ai.intent_detected` maduro. Ação **sugerir produto do grafo**. Múltiplos pipelines por tenant + mover card **entre pipelines** (com stage de pouso + cancelamento de timers). Board de **Conteúdo** (Ideia→Criativo Nano Banana→Aprovação→Agendado→Publicado→Engajamento). **Canais TikTok e X/Twitter** plugados no mesmo barramento via `channel.message_received`/`channel.comment_received` (ver [tiktok.md](../investigacoes/tiktok.md), [twitter.md](../investigacoes/twitter.md)). |
 | **Avançado** | `wait_for_event` (continuations dirigidas por evento). Enrollment por critério (HubSpot). Distribuição inteligente de leads (rodízio/região/carga). Observabilidade de custo de IA por execução. RLS por tenant. CAPI para forms web próprios (dataset com `user_data` hasheado, `action_source = website`). |
 
 ## Glossário
@@ -497,13 +504,13 @@ Citado em 3 lugares (Cenário 1, Catálogo, Roadmap) e **ainda não resolvido**.
 
 ## Documentos relacionados
 
-- [visao-geral.md](./visao-geral.md) — visão geral do produto, o modelo evento → classificação → ação e as Integrações de venda (§4: loja/marketplaces).
-- [concorrentes.md](./concorrentes.md) — análise de mercado (Kommo, BotConversa, Clint, RD, Pipedrive, HubSpot) e o que copiar vs. diferenciar.
-- [integracao-meta-lead-ads-crm.md](./integracao-meta-lead-ads-crm.md) — fluxo Lead Ads → mini-CRM, pipeline `new→contacted→qualified→won/lost` e Conversion Leads (CAPI).
-- [instagram.md](./instagram.md) — webhooks de canal (comments, mentions, messages, postbacks, referral, optins), a espinha dorsal dos triggers PUSH.
-- [facebook.md](./facebook.md) — webhooks de Facebook (comentários de Página, Messenger), fonte dos triggers PUSH de comentário FB e DM via Messenger.
-- [tiktok.md](./tiktok.md) — investigação de TikTok (comentários, DMs, remarketing, posting); canal a plugar via `channel.*` numa fase futura.
-- [twitter.md](./twitter.md) — investigação de X/Twitter (replies, DM, engajamento, remarketing); canal a plugar via `channel.*` numa fase futura.
+- [visao-geral.md](../produto/visao-geral.md) — visão geral do produto, o modelo evento → classificação → ação e as Integrações de venda (§4: loja/marketplaces).
+- [concorrentes.md](../investigacoes/concorrentes.md) — análise de mercado (Kommo, BotConversa, Clint, RD, Pipedrive, HubSpot) e o que copiar vs. diferenciar.
+- [leads-crm.md](./leads-crm.md) — fluxo Lead Ads → mini-CRM, pipeline `new→contacted→qualified→won/lost` e Conversion Leads (CAPI).
+- [instagram.md](../investigacoes/instagram.md) — webhooks de canal (comments, mentions, messages, postbacks, referral, optins), a espinha dorsal dos triggers PUSH.
+- [facebook.md](../investigacoes/facebook.md) — webhooks de Facebook (comentários de Página, Messenger), fonte dos triggers PUSH de comentário FB e DM via Messenger.
+- [tiktok.md](../investigacoes/tiktok.md) — investigação de TikTok (comentários, DMs, remarketing, posting); canal a plugar via `channel.*` numa fase futura.
+- [twitter.md](../investigacoes/twitter.md) — investigação de X/Twitter (replies, DM, engajamento, remarketing); canal a plugar via `channel.*` numa fase futura.
 
 ---
 

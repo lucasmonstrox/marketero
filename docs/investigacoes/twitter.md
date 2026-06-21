@@ -1,8 +1,15 @@
+---
+tipo: investigacao
+status: estável
+updated: 2026-06-21
+description: Investigação da X (Twitter) API para respostas, engajamento, DM e remarketing; viabilidade após as mudanças de preço e regras de 2026.
+---
+
 # Marketero — Automação no X (Twitter): Investigação da API
 
 > Como o Marketero pode automatizar **respostas a comentários, interações em posts, remarketing e mensagens privadas (DM)** usando a X API. Estado verificado em **junho de 2026** — a plataforma mudou de preço e de regras várias vezes em 2025–2026; cada fato volátil abaixo traz a fonte e foi checado de forma independente.
 
-Este documento mapeia a API do X (antigo Twitter) contra os pilares do Marketero descritos em [visao-geral.md](./visao-geral.md): gestão de comentários, inbox unificado, atendimento por IA e o modelo **evento → classificação pela IA → ação**. A conclusão de negócio mais importante vem primeiro, porque ela redefine o que é viável.
+Este documento mapeia a API do X (antigo Twitter) contra os pilares do Marketero descritos em [visao-geral.md](../produto/visao-geral.md): gestão de comentários, inbox unificado, atendimento por IA e o modelo **evento → classificação pela IA → ação**. A conclusão de negócio mais importante vem primeiro, porque ela redefine o que é viável.
 
 ---
 
@@ -685,5 +692,5 @@ Toda resposta traz `x-rate-limit-limit` / `-remaining` / `-reset`. Ao estourar: 
 
 ## Documentos relacionados
 
-- [visao-geral.md](./visao-geral.md) — visão geral do produto e pilares.
+- [visao-geral.md](../produto/visao-geral.md) — visão geral do produto e pilares.
 - [concorrentes.md](./concorrentes.md) — análise de mercado e concorrentes.

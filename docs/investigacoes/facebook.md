@@ -1,3 +1,10 @@
+---
+tipo: investigacao
+status: estável
+updated: 2026-06-21
+description: Investigação da API da Meta/Facebook (Graph/Marketing v25.0) para automação de comentários, Messenger, remarketing e atendimento com IA.
+---
+
 # Facebook / Meta — Investigação Completa da API para o Marketero (2025/2026)
 
 > Investigação técnica de como o **Marketero** pode usar as APIs da Meta para **automatizar respostas a comentários, interações em posts, Messenger, remarketing e atendimento com IA**.
@@ -764,7 +771,7 @@ Fornecer **uma** das opções (App Dashboard → Facebook Login → Settings):
 
 ## 11. Mapa evento → classificação → ação (núcleo do Marketero)
 
-Como o modelo `evento → classificação (IA) → ação` da [visão-geral](./visao-geral.md) se materializa nas APIs:
+Como o modelo `evento → classificação (IA) → ação` da [visão-geral](../produto/visao-geral.md) se materializa nas APIs:
 
 | Evento (origem) | Webhook field | Re-fetch | Ação possível | API da ação |
 |---|---|---|---|---|
@@ -827,7 +834,7 @@ Como o modelo `evento → classificação (IA) → ação` da [visão-geral](./v
 
 ## Documentos relacionados
 
-- [visao-geral.md](./visao-geral.md) — visão geral do produto Marketero.
+- [visao-geral.md](../produto/visao-geral.md) — visão geral do produto Marketero.
 - [concorrentes.md](./concorrentes.md) — análise de mercado.
 
 ## Fontes principais

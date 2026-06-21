@@ -1,3 +1,10 @@
+---
+tipo: investigacao
+status: estável
+updated: 2026-06-21
+description: Comparativo de packages para o editor visual de workflows; recomendação React Flow (@xyflow/react) no frontend + Inngest como motor de execução.
+---
+
 # Investigação: Packages para Editor Visual de Workflows
 
 > Pesquisa comparativa de packages para construir um editor visual de automações/campanhas

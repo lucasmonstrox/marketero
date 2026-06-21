@@ -1,8 +1,15 @@
+---
+tipo: funcionalidade
+status: rascunho
+updated: 2026-06-21
+description: Design do Agente como IA conversacional que conduz um Form via FSM (LLM no roteamento); amarração a Forms e Campanhas, estendendo o mini-CRM.
+---
+
 # Agentes Conversacionais (FSM / LangGraph) — Design
 
 > Documento de **design interno** do Marketero. Define o **Agente** como uma IA conversacional que **conduz um Form** — fazendo, em diálogo, as perguntas que hoje um formulário estático faria — e como isso se amarra aos **Forms** da plataforma e às **Campanhas**.
 >
-> Companheiro de [`visao-geral.md`](./visao-geral.md) (pilares do produto) e de [`integracao-meta-lead-ads-crm.md`](./integracao-meta-lead-ads-crm.md) (o mini-CRM e o vínculo com a Meta). **Não repetimos** o modelo de dados de Lead/Contact/Consent (mini-CRM §6) nem o fluxo de webhooks da Meta — referenciamos e **estendemos**.
+> Companheiro de [`visao-geral.md`](../produto/visao-geral.md) (pilares do produto) e de [`leads-crm.md`](./leads-crm.md) (o mini-CRM e o vínculo com a Meta). **Não repetimos** o modelo de dados de Lead/Contact/Consent (mini-CRM §6) nem o fluxo de webhooks da Meta — referenciamos e **estendemos**.
 
 ---
 
@@ -151,7 +158,7 @@ LangGraph modela exatamente esse híbrido: um **`StateGraph`** com estado tipado
 
 > Recomendação inicial: **prototipar a tabela de transição como dado** (Form → FSM) independente do runtime, para não acoplar o produto a um framework antes de validar. O runtime (LangGraph vs próprio) vira detalhe de implementação.
 
-> Ver [`workflows-visuais.md`](./workflows-visuais.md) — a investigação de **motores de execução / editores visuais** (React Flow, BPMN) é a base técnica candidata para rodar e **editar visualmente** essa FSM. A FSM do Agente pode ser um caso particular do mesmo motor de automação de fluxos descrito em `visao-geral.md` §1.
+> Ver [`workflows-visuais.md`](../investigacoes/workflows-visuais.md) — a investigação de **motores de execução / editores visuais** (React Flow, BPMN) é a base técnica candidata para rodar e **editar visualmente** essa FSM. A FSM do Agente pode ser um caso particular do mesmo motor de automação de fluxos descrito em `visao-geral.md` §1.
 
 ---
 
@@ -316,7 +323,7 @@ Notas de design:
 - `abandoned` **não descarta**: grava o lead parcial (slots já preenchidos) — meio lead vale mais que zero.
 - Esses números são **de produto, não técnicos** — o doc fixa um ponto de partida; o ajuste fino é empírico.
 
-- [visao-geral.md](./visao-geral.md) — pilares do produto (automação `evento → classificação → ação`, GraphRAG).
-- [integracao-meta-lead-ads-crm.md](./integracao-meta-lead-ads-crm.md) — mini-CRM (Lead/Contact/Consent), Instant Forms, webhooks, CAPI.
-- [workflows-visuais.md](./workflows-visuais.md) — motores de execução / editor visual de fluxos (React Flow, BPMN); runtime candidato para a FSM.
-- [editores-ui-page-form-builders.md](./editores-ui-page-form-builders.md) — form builders; onde o Form (perguntas) é construído antes de virar roteiro do Agente.
+- [visao-geral.md](../produto/visao-geral.md) — pilares do produto (automação `evento → classificação → ação`, GraphRAG).
+- [leads-crm.md](./leads-crm.md) — mini-CRM (Lead/Contact/Consent), Instant Forms, webhooks, CAPI.
+- [workflows-visuais.md](../investigacoes/workflows-visuais.md) — motores de execução / editor visual de fluxos (React Flow, BPMN); runtime candidato para a FSM.
+- [editores-ui-page-form-builders.md](../investigacoes/editores-ui-page-form-builders.md) — form builders; onde o Form (perguntas) é construído antes de virar roteiro do Agente.

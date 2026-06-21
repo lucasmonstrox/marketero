@@ -1,3 +1,10 @@
+---
+tipo: produto
+status: estável
+updated: 2026-06-21
+description: Documento fundador: plataforma que unifica marketing, vendas e atendimento num cérebro de IA GraphRAG cruzando canais social, venda e atendimento.
+---
+
 # Marketero — Visão Geral
 
 > Automação de marketing e atendimento inteligente para redes sociais, com uma IA de GraphRAG no centro de tudo.
@@ -87,14 +94,14 @@ Visão completa e unificada de métricas de todos os canais — social, atendime
 
 ### Web forms próprios integráveis com o Meta
 
-Construtor de **formulários web** do próprio Marketero para captura de leads — distinto dos **Instant Forms** nativos da Meta (Lead Ads), já investigados em [integracao-meta-lead-ads-crm.md](./integracao-meta-lead-ads-crm.md). Aqui o form é **hospedado pelo Marketero** (controle total da UI e dos dados).
+Construtor de **formulários web** do próprio Marketero para captura de leads — distinto dos **Instant Forms** nativos da Meta (Lead Ads), já investigados em [leads-crm.md](../funcionalidades/leads-crm.md). Aqui o form é **hospedado pelo Marketero** (controle total da UI e dos dados).
 
 - **Dois modos de entrega:**
   - **Via URL (hosted):** formulário publicado numa página própria/standalone, compartilhável em link de bio, campanhas, QR code, etc.
   - **Embedável:** snippet (iframe/script) para incorporar em sites e lojas de terceiros.
-- **Integração com o Meta:** as submissões alimentam o mesmo **mini-CRM** (Lead → Contact → Pipeline) e podem ser devolvidas à Meta como conversões via **Conversions API (CAPI)** para otimização de campanha — reaproveitando o fluxo já descrito em [integracao-meta-lead-ads-crm.md](./integracao-meta-lead-ads-crm.md) (§6.6, Conversion Leads).
+- **Integração com o Meta:** as submissões alimentam o mesmo **mini-CRM** (Lead → Contact → Pipeline) e podem ser devolvidas à Meta como conversões via **Conversions API (CAPI)** para otimização de campanha — reaproveitando o fluxo já descrito em [leads-crm.md](../funcionalidades/leads-crm.md) (§6.6, Conversion Leads).
 - **A definir:** mecanismo exato de integração com o Meta (CAPI vs Pixel vs Custom Audiences), proteção anti-spam (captcha/anti-bot), mapeamento de campos → CRM e branding/multi-tenant.
-- **Tecnologia do construtor:** ver [editores-ui-page-form-builders.md](./editores-ui-page-form-builders.md) — investigação de page/form builders (Puck, Craft.js, Plasmic, SurveyJS, Formbricks, Form.io) e SDKs (Unlayer, GrapesJS Studio, Beefree). Recomendação inicial: **build** com Puck (páginas) + SurveyJS/Formbricks (formulários) pelo controle de dados e white-label sem custo recorrente.
+- **Tecnologia do construtor:** ver [editores-ui-page-form-builders.md](../investigacoes/editores-ui-page-form-builders.md) — investigação de page/form builders (Puck, Craft.js, Plasmic, SurveyJS, Formbricks, Form.io) e SDKs (Unlayer, GrapesJS Studio, Beefree). Recomendação inicial: **build** com Puck (páginas) + SurveyJS/Formbricks (formulários) pelo controle de dados e white-label sem custo recorrente.
 
 ## Glossário
 
@@ -105,12 +112,12 @@ Construtor de **formulários web** do próprio Marketero para captura de leads �
 
 ## Documentos relacionados
 
-- [concorrentes.md](./concorrentes.md) — análise de mercado e concorrentes.
-- [twitter.md](./twitter.md) — investigação da API do X (Twitter) para automação de respostas, engajamento, DM e remarketing.
-- [tiktok.md](./tiktok.md) — investigação da API do TikTok para automação (comentários, interações, remarketing, DMs, posting).
-- [facebook.md](./facebook.md) — investigação da API do Facebook para automação.
-- [instagram.md](./instagram.md) — guia de automação da API do Instagram (comentários, DMs, publicação, webhooks, métricas).
-- [integracao-meta-lead-ads-crm.md](./integracao-meta-lead-ads-crm.md) — guia do fluxo Lead Ads → inscrição → mini-CRM (Instant Forms, webhook `leadgen`, Conversion Leads).
-- [agentes-conversacionais-fsm.md](./agentes-conversacionais-fsm.md) — design do Agente como IA conversacional que conduz um Form via FSM/LangGraph (Agente = motor, Form = perguntas, Campanha = bind com override de form).
-- [workflows-visuais.md](./workflows-visuais.md) — investigação de packages para o editor visual de workflows/automações (React Flow, BPMN, motores de execução); base técnica para a automação de fluxos descrita em §1.
-- [editores-ui-page-form-builders.md](./editores-ui-page-form-builders.md) — investigação de editores visuais de UI (page builders e form builders) para o construtor de landing pages e formulários; base técnica para os "Web forms próprios".
+- [concorrentes.md](../investigacoes/concorrentes.md) — análise de mercado e concorrentes.
+- [twitter.md](../investigacoes/twitter.md) — investigação da API do X (Twitter) para automação de respostas, engajamento, DM e remarketing.
+- [tiktok.md](../investigacoes/tiktok.md) — investigação da API do TikTok para automação (comentários, interações, remarketing, DMs, posting).
+- [facebook.md](../investigacoes/facebook.md) — investigação da API do Facebook para automação.
+- [instagram.md](../investigacoes/instagram.md) — guia de automação da API do Instagram (comentários, DMs, publicação, webhooks, métricas).
+- [leads-crm.md](../funcionalidades/leads-crm.md) — guia do fluxo Lead Ads → inscrição → mini-CRM (Instant Forms, webhook `leadgen`, Conversion Leads).
+- [agentes.md](../funcionalidades/agentes.md) — design do Agente como IA conversacional que conduz um Form via FSM/LangGraph (Agente = motor, Form = perguntas, Campanha = bind com override de form).
+- [workflows-visuais.md](../investigacoes/workflows-visuais.md) — investigação de packages para o editor visual de workflows/automações (React Flow, BPMN, motores de execução); base técnica para a automação de fluxos descrita em §1.
+- [editores-ui-page-form-builders.md](../investigacoes/editores-ui-page-form-builders.md) — investigação de editores visuais de UI (page builders e form builders) para o construtor de landing pages e formulários; base técnica para os "Web forms próprios".

@@ -1,3 +1,10 @@
+---
+tipo: investigacao
+status: estável
+updated: 2026-06-21
+description: Guia de automação da Plataforma Instagram (Graph API v25.0) no modelo evento→classificação→ação: webhooks, comentários, DMs, menções, referrals.
+---
+
 # API do Instagram — Guia de Automação para o Marketero
 
 O **Marketero** é uma plataforma SaaS multi-tenant de automação de marketing no Instagram, construída sobre um motor de IA **GraphRAG** que opera no modelo **evento → classificação → ação**: cada interação capturada via webhook (comentário, DM, menção, referral de anúncio) é normalizada, classificada quanto a intenção/sentimento/rota pela IA e convertida em uma ação concreta na Graph API (responder comentário, enviar DM, sugerir produto, escalar para humano, registrar conversão). Este guia consolida tudo o que a engenharia do Marketero precisa para integrar a Plataforma Instagram da Meta com segurança, escala e conformidade. Todas as referências usam a versão atual da Graph API, **v25.0** (lançada em 18 de fevereiro de 2026).

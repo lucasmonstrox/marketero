@@ -1,6 +1,13 @@
+---
+tipo: funcionalidade
+status: rascunho
+updated: 2026-06-21
+description: Spec do fluxo Lead Ads → inscrição → mini-CRM: Instant Forms, webhook leadgen, modelo de dados, lead access e consentimento (LGPD).
+---
+
 # Facebook / Instagram Lead Ads → Inscrições → Mini-CRM — Guia de Implementação (2025/2026)
 
-> Documento **companheiro** de [`integracao-meta-facebook.md`](./integracao-meta-facebook.md) (a "investigação geral da API da Meta"). Aqui o escopo é **estritamente** o fluxo **Lead Ads → inscrição → mini-CRM** do **Marketero**: anatomia dos Instant Forms, o webhook `leadgen`, retrieval da inscrição, permissões/lead access, modelo de dados do CRM, consentimento (LGPD) e confiabilidade operacional.
+> Documento **companheiro** de [`facebook.md`](../investigacoes/facebook.md) (a "investigação geral da API da Meta"). Aqui o escopo é **estritamente** o fluxo **Lead Ads → inscrição → mini-CRM** do **Marketero**: anatomia dos Instant Forms, o webhook `leadgen`, retrieval da inscrição, permissões/lead access, modelo de dados do CRM, consentimento (LGPD) e confiabilidade operacional.
 >
 > Baseado na documentação oficial (`developers.facebook.com/docs`, `developers.facebook.com/blog`, `transparency.meta.com`, `facebook.com/business/help`) refletindo **Graph API / Marketing API v25.0** (18/02/2026). Texto em PT-BR; nomes de API, campos, enums, permissões e endpoints mantidos em inglês conforme a convenção da plataforma.
 >
@@ -778,9 +785,9 @@ Roda `GET /{form_id}/leads` com `filtering` por `time_created` (watermark + dedu
 
 ## Documentos relacionados
 
-- [integracao-meta-facebook.md](./integracao-meta-facebook.md) — investigação geral da API da Meta (webhooks, tokens, permissões, FLB, Messenger, Marketing API, LGPD).
-- [visao-geral.md](./visao-geral.md) — visão geral do produto Marketero.
-- [instagram.md](./instagram.md) — investigação específica do Instagram.
+- [facebook.md](../investigacoes/facebook.md) — investigação geral da API da Meta (webhooks, tokens, permissões, FLB, Messenger, Marketing API, LGPD).
+- [visao-geral.md](../produto/visao-geral.md) — visão geral do produto Marketero.
+- [instagram.md](../investigacoes/instagram.md) — investigação específica do Instagram.
 
 ## Fontes principais
 
