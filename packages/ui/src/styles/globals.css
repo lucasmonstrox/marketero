@@ -7,6 +7,17 @@
 @source "../../../components/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
 
+/*
+  Marketero — paleta de marca (marketing · vendas · atendimento com IA)
+  --------------------------------------------------------------------
+  Índigo    ~264  -> marca / autoridade / ações primárias / nav rail
+  Violeta   ~292  -> accent de energia + tratamento de IA (GraphRAG)
+  Neutros   ~286  -> levemente temperados (não "cinza de template")
+  Status: success(verde 150) · warning(âmbar 75) · info(azul 240) · destructive(vermelho 27)
+  Canais usados só como ACENTO (badge/ícone/borda), nunca como fundo de superfície.
+  Valores iniciais — calibráveis com a marca; os NOMES dos tokens são o contrato estável.
+*/
+
 @theme inline {
     --font-heading: var(--font-sans);
     --color-sidebar-ring: var(--sidebar-ring);
@@ -25,7 +36,18 @@
     --color-ring: var(--ring);
     --color-input: var(--input);
     --color-border: var(--border);
+    --color-info-foreground: var(--info-foreground);
+    --color-info: var(--info);
+    --color-warning-foreground: var(--warning-foreground);
+    --color-warning: var(--warning);
+    --color-success-foreground: var(--success-foreground);
+    --color-success: var(--success);
     --color-destructive: var(--destructive);
+    --color-ai-border: var(--ai-border);
+    --color-ai-foreground: var(--ai-foreground);
+    --color-ai: var(--ai);
+    --color-accent-brand-foreground: var(--accent-brand-foreground);
+    --color-accent-brand: var(--accent-brand);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
@@ -40,6 +62,22 @@
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
+
+    --color-channel-instagram: var(--channel-instagram);
+    --color-channel-instagram-foreground: var(--channel-instagram-foreground);
+    --color-channel-facebook: var(--channel-facebook);
+    --color-channel-facebook-foreground: var(--channel-facebook-foreground);
+    --color-channel-whatsapp: var(--channel-whatsapp);
+    --color-channel-whatsapp-foreground: var(--channel-whatsapp-foreground);
+    --color-channel-tiktok: var(--channel-tiktok);
+    --color-channel-tiktok-foreground: var(--channel-tiktok-foreground);
+    --color-channel-x: var(--channel-x);
+    --color-channel-x-foreground: var(--channel-x-foreground);
+    --color-channel-mercadolivre: var(--channel-mercadolivre);
+    --color-channel-mercadolivre-foreground: var(--channel-mercadolivre-foreground);
+    --color-channel-web: var(--channel-web);
+    --color-channel-web-foreground: var(--channel-web-foreground);
+
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -48,75 +86,158 @@
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
     --font-sans: var(--font-sans);
+    --animate-pulse-soft: pulse-soft 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
 }
 
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
+    /* Canvas quase-branco com leve temperatura fria + superfícies brancas */
+    --background: oklch(0.99 0.003 286);
+    --foreground: oklch(0.21 0.02 286);
     --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
+    --card-foreground: oklch(0.21 0.02 286);
     --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
+    --popover-foreground: oklch(0.21 0.02 286);
+
+    /* Índigo = ação primária / marca */
+    --primary: oklch(0.45 0.17 264);
+    --primary-foreground: oklch(0.985 0.005 264);
+
+    /* Neutros temperados (violet-leaning) */
+    --secondary: oklch(0.96 0.012 286);
+    --secondary-foreground: oklch(0.30 0.05 264);
+    --muted: oklch(0.97 0.008 286);
+    --muted-foreground: oklch(0.55 0.03 286);
+    --accent: oklch(0.95 0.02 290);
+    --accent-foreground: oklch(0.30 0.05 264);
+
+    /* Accent de marca (violeta — energia, expander) + tratamento de IA */
+    --accent-brand: oklch(0.55 0.21 292);
+    --accent-brand-foreground: oklch(0.99 0.01 292);
+    --ai: oklch(0.55 0.19 292);
+    --ai-foreground: oklch(0.99 0.01 292);
+    --ai-border: oklch(0.55 0.19 292 / 40%);
+
+    /* Status */
+    --destructive: oklch(0.577 0.245 27);
+    --success: oklch(0.55 0.14 150);
+    --success-foreground: oklch(0.99 0.01 150);
+    --warning: oklch(0.72 0.16 75);
+    --warning-foreground: oklch(0.27 0.04 75);
+    --info: oklch(0.55 0.15 240);
+    --info-foreground: oklch(0.99 0.01 240);
+
+    /* Linhas / inputs / foco */
+    --border: oklch(0.91 0.008 286);
+    --input: oklch(0.91 0.008 286);
+    --ring: oklch(0.55 0.21 292);
+
+    /* Data-viz — categórica: índigo, ciano, verde, âmbar, magenta (L semelhante) */
+    --chart-1: oklch(0.55 0.20 264);
+    --chart-2: oklch(0.62 0.16 200);
+    --chart-3: oklch(0.65 0.15 150);
+    --chart-4: oklch(0.75 0.15 75);
+    --chart-5: oklch(0.58 0.22 350);
+
+    /* Canais sociais — acento pontual (badge/ícone/borda lateral) */
+    --channel-instagram: oklch(0.62 0.23 4);
+    --channel-instagram-foreground: oklch(0.99 0.01 4);
+    --channel-facebook: oklch(0.55 0.18 250);
+    --channel-facebook-foreground: oklch(0.99 0.01 250);
+    --channel-whatsapp: oklch(0.60 0.16 150);
+    --channel-whatsapp-foreground: oklch(0.99 0.01 150);
+    --channel-tiktok: oklch(0.62 0.13 195);
+    --channel-tiktok-foreground: oklch(0.99 0.01 195);
+    --channel-x: oklch(0.27 0.01 286);
+    --channel-x-foreground: oklch(0.99 0.005 286);
+    --channel-mercadolivre: oklch(0.83 0.16 95);
+    --channel-mercadolivre-foreground: oklch(0.27 0.04 95);
+    --channel-web: oklch(0.45 0.17 264);
+    --channel-web-foreground: oklch(0.99 0.01 264);
+
     --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+
+    /* Nav rail índigo-profundo + texto claro, item ativo em violeta */
+    --sidebar: oklch(0.24 0.04 286);
+    --sidebar-foreground: oklch(0.92 0.01 286);
+    --sidebar-primary: oklch(0.58 0.21 292);
+    --sidebar-primary-foreground: oklch(0.99 0.01 292);
+    --sidebar-accent: oklch(0.30 0.04 286);
+    --sidebar-accent-foreground: oklch(0.96 0.008 286);
+    --sidebar-border: oklch(0.55 0.03 286 / 30%);
+    --sidebar-ring: oklch(0.58 0.21 292);
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+    /* Canvas índigo-quase-preto */
+    --background: oklch(0.18 0.015 286);
+    --foreground: oklch(0.96 0.005 286);
+    --card: oklch(0.22 0.018 286);
+    --card-foreground: oklch(0.96 0.005 286);
+    --popover: oklch(0.22 0.018 286);
+    --popover-foreground: oklch(0.96 0.005 286);
+
+    --primary: oklch(0.65 0.16 264);
+    --primary-foreground: oklch(0.18 0.02 264);
+
+    --secondary: oklch(0.27 0.02 286);
+    --secondary-foreground: oklch(0.96 0.005 286);
+    --muted: oklch(0.27 0.02 286);
+    --muted-foreground: oklch(0.70 0.02 286);
+    --accent: oklch(0.30 0.03 290);
+    --accent-foreground: oklch(0.96 0.005 286);
+
+    --accent-brand: oklch(0.68 0.20 292);
+    --accent-brand-foreground: oklch(0.18 0.02 292);
+    --ai: oklch(0.68 0.18 292);
+    --ai-foreground: oklch(0.18 0.02 292);
+    --ai-border: oklch(0.68 0.18 292 / 45%);
+
+    --destructive: oklch(0.70 0.19 22);
+    --success: oklch(0.65 0.13 150);
+    --success-foreground: oklch(0.16 0.02 150);
+    --warning: oklch(0.78 0.15 75);
+    --warning-foreground: oklch(0.20 0.03 75);
+    --info: oklch(0.65 0.14 240);
+    --info-foreground: oklch(0.16 0.02 240);
+
+    --border: oklch(0.98 0.01 286 / 12%);
+    --input: oklch(0.98 0.01 286 / 16%);
+    --ring: oklch(0.68 0.20 292);
+
+    --chart-1: oklch(0.65 0.19 264);
+    --chart-2: oklch(0.70 0.15 200);
+    --chart-3: oklch(0.70 0.14 150);
+    --chart-4: oklch(0.80 0.14 75);
+    --chart-5: oklch(0.68 0.21 350);
+
+    --channel-instagram: oklch(0.68 0.22 4);
+    --channel-instagram-foreground: oklch(0.16 0.02 4);
+    --channel-facebook: oklch(0.62 0.17 250);
+    --channel-facebook-foreground: oklch(0.16 0.02 250);
+    --channel-whatsapp: oklch(0.68 0.15 150);
+    --channel-whatsapp-foreground: oklch(0.16 0.02 150);
+    --channel-tiktok: oklch(0.70 0.13 195);
+    --channel-tiktok-foreground: oklch(0.16 0.02 195);
+    --channel-x: oklch(0.90 0.005 286);
+    --channel-x-foreground: oklch(0.20 0.01 286);
+    --channel-mercadolivre: oklch(0.85 0.16 95);
+    --channel-mercadolivre-foreground: oklch(0.20 0.03 95);
+    --channel-web: oklch(0.65 0.16 264);
+    --channel-web-foreground: oklch(0.16 0.02 264);
+
+    --sidebar: oklch(0.20 0.025 286);
+    --sidebar-foreground: oklch(0.92 0.01 286);
+    --sidebar-primary: oklch(0.62 0.20 292);
+    --sidebar-primary-foreground: oklch(0.99 0.01 292);
+    --sidebar-accent: oklch(0.28 0.03 286);
+    --sidebar-accent-foreground: oklch(0.95 0.008 286);
+    --sidebar-border: oklch(0.98 0.01 286 / 10%);
+    --sidebar-ring: oklch(0.62 0.20 292);
 }
 
 @layer base {
