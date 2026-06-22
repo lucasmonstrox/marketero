@@ -16,9 +16,9 @@ Cada pasta responde a uma pergunta diferente:
 | [`investigacoes/`](investigacoes/) | O que estudei pra decidir | Pesquisa com evidência (APIs, mercado, tooling) |
 | [`funcionalidades/`](funcionalidades/) | Como cada módulo se comporta | Spec por feature (agentes, kanban, leads/CRM) |
 | [`design/`](design/) | Como o produto parece | Cores, tokens, componentes e UI (visual) |
+| [`referencia/`](referencia/) | Qual é o contrato técnico | Stack, schema, arquitetura |
 | `negocio/` | Quais são as regras decididas | Regras de domínio (RN-*) — _ainda sem conteúdo_ |
 | `planos/` | Como vamos implementar | Planos executáveis — _ainda sem conteúdo_ |
-| `referencia/` | Qual é o contrato técnico | Stack, schema — _ainda sem conteúdo_ |
 
 > O fluxo caminha da pesquisa à entrega: **`investigacoes/` → decisão (`produto/` ·
 > `funcionalidades/` · `design/`) → `planos/` → `referencia/`**. Os três eixos sem pasta
@@ -36,9 +36,23 @@ Ver [investigacoes/README.md](investigacoes/README.md).
 - [instagram.md](investigacoes/instagram.md) — Plataforma Instagram (webhooks, DMs, comentários).
 - [tiktok.md](investigacoes/tiktok.md) — APIs do TikTok (orgânico, ads, Shop).
 - [twitter.md](investigacoes/twitter.md) — X (Twitter) API após as mudanças de 2026.
+- [whatsapp.md](investigacoes/whatsapp.md) — WhatsApp Cloud API como canal #1 de atendimento (oficial vs não-oficial, multi-tenant, LGPD).
+- [graphrag-noderag.md](investigacoes/graphrag-noderag.md) — o "cérebro" GraphRAG: NodeRAG é research-grade; caminho faseado vector→graph-lite.
+- [classificacao-eventos.md](investigacoes/classificacao-eventos.md) — a "classificação" do loop: bandas 0.80/0.50 precisam de confiança calibrada (não dá logprob do Claude); cascade híbrido.
+- [ingestao-inbox-realtime.md](investigacoes/ingestao-inbox-realtime.md) — ingestão de webhooks + inbox realtime sobre Cloudflare (Worker→Queue→Workflow→Durable Object).
+- [orquestracao-agente.md](investigacoes/orquestracao-agente.md) — runtime do Agente FSM+LLM em Workers: FSM/XState num Durable Object; LangGraph.js fora.
+- [classificacao-eventos.md](investigacoes/classificacao-eventos.md) — a "classificação": bandas 0.80/0.50 precisam de confiança calibrada; cascade híbrido.
+- [avaliacao-guardrails.md](investigacoes/avaliacao-guardrails.md) — eval/guardrails do auto-reply: banda 0.50–0.79 = compliance (Meta+LGPD), compromissos só em regras determinísticas.
+- [unit-economics.md](investigacoes/unit-economics.md) — custo de IA fim-a-fim; plano flat R$150 afunda acima de ~2.400 conversas/mês.
+- [metricas-atribuicao.md](investigacoes/metricas-atribuicao.md) — analytics unificado + atribuição cross-canal sobre Cloudflare+Postgres.
+- [marketplaces-venda.md](investigacoes/marketplaces-venda.md) — APIs de venda BR (Mercado Livre, Mercado Pago, OLX) sob a lente evento→ação.
 - [concorrentes.md](investigacoes/concorrentes.md) — benchmark de 22 concorrentes verificados.
 - [editores-ui-page-form-builders.md](investigacoes/editores-ui-page-form-builders.md) — page/form builders (build vs buy).
 - [workflows-visuais.md](investigacoes/workflows-visuais.md) — packages para editor visual de workflows.
+
+## referencia/ — o contrato técnico
+Ver [referencia/README.md](referencia/README.md).
+- [arquitetura.md](referencia/arquitetura.md) — stack convergente (Cloudflare Workers + Postgres único + Claude); consolida as investigações e corrige a suposição AGE-no-Neon (grafo via CTEs).
 
 ## funcionalidades/ — como cada módulo se comporta
 Ver [funcionalidades/README.md](funcionalidades/README.md).
