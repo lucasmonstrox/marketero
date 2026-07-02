@@ -24,13 +24,10 @@ import { AiTag } from "@/shared/ui/ai-tag"
 import { ChannelIcon } from "@/shared/ui/channel-icon"
 import { ClassificationBadge } from "@/shared/ui/classification-badge"
 import { CHANNEL_META } from "@/shared/domain/channels"
-import { formatCurrency, formatRelative } from "@/shared/lib/format"
+import { formatCurrency, formatRelativeNow } from "@/shared/lib/format"
 
-import {
-  type LeadCard,
-  STAGE_ACCENT_CLASSES,
-  TEAM,
-} from "../_data/pipelines"
+import { STAGE_ACCENT_CLASSES } from "../_lib/accents"
+import type { UiCard } from "../_lib/board-adapter"
 import { AutomationIndicator } from "./automation-indicator"
 
 interface DragHandleProps {
@@ -40,13 +37,15 @@ interface DragHandleProps {
 }
 
 interface LeadCardViewProps {
-  card: LeadCard
+  card: UiCard
   /** Chave do acento da etapa-mãe (para a borda lateral colorida). */
   accentKey: string
   /** Render flutuante no DragOverlay → sombra + leve rotação. */
   overlay?: boolean
   /** Liga o handle de arraste ao dnd-kit (injetado pelo wrapper sortable). */
   dragHandle?: DragHandleProps
+  /** Clique no corpo do card (abre edição). */
+  onClick?: () => void
 }
 
 /** Card presentacional puro — reutilizado no board e no DragOverlay. */
@@ -55,9 +54,9 @@ export function LeadCardView({
   accentKey,
   overlay = false,
   dragHandle,
+  onClick,
 }: LeadCardViewProps) {
   const accent = STAGE_ACCENT_CLASSES[accentKey] ?? STAGE_ACCENT_CLASSES["chart-1"]!
-  const owner = TEAM[card.ownerId] ?? TEAM.ana!
   const channel = CHANNEL_META[card.channel]
 
   return (
@@ -68,8 +67,11 @@ export function LeadCardView({
         accent.border,
         overlay
           ? "rotate-1 shadow-xl"
-          : "shadow-xs hover:shadow-sm focus-within:ring-2 focus-within:ring-ring/50"
+          : "shadow-xs hover:shadow-sm focus-within:ring-2 focus-within:ring-ring/50",
+        onClick && "cursor-pointer"
       )}
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
     >
       <div className="flex flex-col gap-2 p-2.5">
         {/* Cabeçalho: canal + contato + valor + handle */}
@@ -96,6 +98,7 @@ export function LeadCardView({
             type="button"
             ref={dragHandle?.ref}
             aria-label={`Arrastar card de ${card.contactName}`}
+            onClick={(e) => e.stopPropagation()}
             className={cn(
               "-mr-1 -mt-0.5 flex size-6 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-muted-foreground/60",
               "opacity-0 transition hover:bg-muted hover:text-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none group-hover/lead:opacity-100 active:cursor-grabbing",
@@ -116,18 +119,20 @@ export function LeadCardView({
         ) : null}
 
         {/* Classificação + tags */}
-        <div className="flex flex-wrap items-center gap-1">
-          <ClassificationBadge intent={card.intent} />
-          {card.tags.map((tag) => (
-            <Badge
-              key={tag}
-              variant="outline"
-              className="h-5 rounded-md px-1.5 text-[11px] font-normal text-muted-foreground"
-            >
-              {tag}
-            </Badge>
-          ))}
-        </div>
+        {card.intent || card.tags.length > 0 ? (
+          <div className="flex flex-wrap items-center gap-1">
+            {card.intent ? <ClassificationBadge intent={card.intent} /> : null}
+            {card.tags.map((tag) => (
+              <Badge
+                key={tag}
+                variant="outline"
+                className="h-5 rounded-md px-1.5 text-[11px] font-normal text-muted-foreground"
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        ) : null}
 
         {/* Sugestão de IA */}
         {card.aiSuggestion ? (
@@ -144,32 +149,31 @@ export function LeadCardView({
         {/* Rodapé: automação + tempo na etapa + responsável */}
         <div className="flex items-center justify-between gap-2 pt-0.5">
           <div className="flex min-w-0 items-center gap-1.5">
-            <AutomationIndicator
-              state={card.automation}
-              detail={card.automationDetail}
-              className="min-w-0"
-            />
+            {card.automation ? (
+              <AutomationIndicator
+                state={card.automation}
+                detail={card.automationDetail}
+                className="min-w-0"
+              />
+            ) : null}
           </div>
 
           <div className="flex shrink-0 items-center gap-1.5">
             <span className="text-[11px] text-muted-foreground">
-              {formatRelative(card.enteredAt)}
+              {formatRelativeNow(card.enteredAt)}
             </span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Avatar size="sm">
-                  <AvatarFallback
-                    className={cn(
-                      "text-[10px] font-medium",
-                      owner.id === "ia" && "bg-ai/15 text-ai"
-                    )}
-                  >
-                    {owner.initials}
-                  </AvatarFallback>
-                </Avatar>
-              </TooltipTrigger>
-              <TooltipContent>{owner.name}</TooltipContent>
-            </Tooltip>
+            {card.ownerName ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Avatar size="sm">
+                    <AvatarFallback className="text-[10px] font-medium">
+                      {card.ownerInitials}
+                    </AvatarFallback>
+                  </Avatar>
+                </TooltipTrigger>
+                <TooltipContent>{card.ownerName}</TooltipContent>
+              </Tooltip>
+            ) : null}
           </div>
         </div>
       </div>
@@ -181,9 +185,11 @@ export function LeadCardView({
 export function SortableLeadCard({
   card,
   accentKey,
+  onClick,
 }: {
-  card: LeadCard
+  card: UiCard
   accentKey: string
+  onClick?: () => void
 }) {
   const {
     attributes,
@@ -208,6 +214,7 @@ export function SortableLeadCard({
         card={card}
         accentKey={accentKey}
         dragHandle={{ ref: setActivatorNodeRef, attributes, listeners }}
+        onClick={onClick}
       />
     </div>
   )

@@ -21,20 +21,19 @@ import {
 import { Switch } from "@workspace/ui/components/switch"
 import { cn } from "@workspace/ui/lib/utils"
 
+import { accentKey, STAGE_ACCENT_CLASSES } from "../_lib/accents"
 import {
-  accentKey,
   ROBOT_META,
-  type Stage,
-  STAGE_ACCENT_CLASSES,
   type StageRobot,
   type StageTrigger,
   TRIGGER_META,
-} from "../_data/pipelines"
+} from "../_lib/automations"
+import type { UiStage } from "../_lib/board-adapter"
 import { RobotBadge } from "./robot-badge"
 import { TriggerBadge } from "./trigger-badge"
 
 interface StageAutomationPanelProps {
-  stage: Stage | null
+  stage: UiStage | null
   open: boolean
   onOpenChange: (open: boolean) => void
   onToggleTrigger: (stageId: string, triggerId: string) => void

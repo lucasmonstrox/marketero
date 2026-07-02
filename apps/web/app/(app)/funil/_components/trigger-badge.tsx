@@ -4,7 +4,7 @@ import { cn } from "@workspace/ui/lib/utils"
 
 import { ChannelIcon } from "@/shared/ui/channel-icon"
 
-import { TRIGGER_META, type TriggerType } from "../_data/pipelines"
+import { TRIGGER_META, type TriggerType } from "../_lib/automations"
 
 /**
  * Chip de TRIGGER (inbound): regra que MOVE o card para a etapa. Sempre com

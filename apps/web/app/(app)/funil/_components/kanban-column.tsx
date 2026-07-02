@@ -7,14 +7,26 @@ import {
 } from "@dnd-kit/sortable"
 import {
   ArrowDownToLineIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
   BotIcon,
   LockIcon,
+  MoreHorizontalIcon,
+  PencilIcon,
   PlusIcon,
-  Settings2Icon,
+  Trash2Icon,
+  ZapIcon,
 } from "lucide-react"
 
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import {
   Tooltip,
@@ -25,23 +37,33 @@ import { cn } from "@workspace/ui/lib/utils"
 
 import { formatCurrency } from "@/shared/lib/format"
 
-import {
-  accentKey,
-  type Stage,
-  STAGE_ACCENT_CLASSES,
-} from "../_data/pipelines"
+import { accentKey, STAGE_ACCENT_CLASSES } from "../_lib/accents"
+import type { UiCard, UiStage } from "../_lib/board-adapter"
 import { SortableLeadCard } from "./lead-card"
 
 interface KanbanColumnProps {
-  stage: Stage
-  onOpenAutomations: (stage: Stage) => void
+  stage: UiStage
+  /** Posição da coluna no board (para mover ← →). */
+  index: number
+  stageCount: number
+  onOpenAutomations: (stage: UiStage) => void
   onAddCard: (stageId: string) => void
+  onCardClick: (card: UiCard) => void
+  onEditStage: (stage: UiStage) => void
+  onMoveStage: (stageId: string, direction: -1 | 1) => void
+  onDeleteStage: (stage: UiStage) => void
 }
 
 export function KanbanColumn({
   stage,
+  index,
+  stageCount,
   onOpenAutomations,
   onAddCard,
+  onCardClick,
+  onEditStage,
+  onMoveStage,
+  onDeleteStage,
 }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: stage.id,
@@ -93,19 +115,50 @@ export function KanbanColumn({
             {stage.cards.length}
           </Badge>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon-sm"
-                onClick={() => onOpenAutomations(stage)}
-                aria-label={`Automações da etapa ${stage.name}`}
+                aria-label={`Ações da etapa ${stage.name}`}
               >
-                <Settings2Icon />
+                <MoreHorizontalIcon />
               </Button>
-            </TooltipTrigger>
-            <TooltipContent>Automações da etapa</TooltipContent>
-          </Tooltip>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onSelect={() => onOpenAutomations(stage)}>
+                <ZapIcon className="size-3.5" />
+                Automações
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => onEditStage(stage)}>
+                <PencilIcon className="size-3.5" />
+                Editar etapa
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                disabled={index === 0}
+                onSelect={() => onMoveStage(stage.id, -1)}
+              >
+                <ArrowLeftIcon className="size-3.5" />
+                Mover para a esquerda
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                disabled={index >= stageCount - 1}
+                onSelect={() => onMoveStage(stage.id, 1)}
+              >
+                <ArrowRightIcon className="size-3.5" />
+                Mover para a direita
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => onDeleteStage(stage)}
+              >
+                <Trash2Icon className="size-3.5" />
+                Excluir etapa
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <div className="flex items-center justify-between gap-2">
@@ -173,7 +226,12 @@ export function KanbanColumn({
             strategy={verticalListSortingStrategy}
           >
             {stage.cards.map((card) => (
-              <SortableLeadCard key={card.id} card={card} accentKey={key} />
+              <SortableLeadCard
+                key={card.id}
+                card={card}
+                accentKey={key}
+                onClick={() => onCardClick(card)}
+              />
             ))}
           </SortableContext>
 

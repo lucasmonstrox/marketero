@@ -19,6 +19,7 @@ import { Logo } from "@/shared/ui/logo"
 import { ThemeToggle } from "@/shared/ui/theme-toggle"
 import { NAV_SECTIONS } from "./nav"
 import { SidebarExpander } from "./sidebar-expander"
+import { SidebarSearch } from "./sidebar-search"
 import { UserMenu } from "./user-menu"
 
 export function AppSidebar() {
@@ -35,6 +36,7 @@ export function AppSidebar() {
           >
             <Logo />
           </Link>
+          <SidebarSearch />
         </SidebarHeader>
 
         <SidebarContent>

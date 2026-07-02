@@ -1,7 +1,10 @@
 /**
  * Wiring da feature STAGES. Sem prefix único: as rotas de coleção são
- * aninhadas no pipeline (/pipelines/:pipelineId/stages) e as de item são
- * planas (/stages/:id) — o path expressa o dono.
+ * aninhadas no pipeline (/pipelines/:id/stages) e as de item são planas
+ * (/stages/:id) — o path expressa o dono. O param aninhado se chama `:id`
+ * (não `:pipelineId`) de propósito: o Eden Treaty colapsa params de nomes
+ * diferentes no mesmo segmento num union de subárvores, quebrando a
+ * inferência de `pipelines({ id }).board` no client.
  */
 import { Elysia, t } from "elysia"
 
@@ -11,7 +14,7 @@ import { ErrorResponse } from "../../shared/errors/model"
 import { createStage } from "./create-stage/create-stage.service"
 import { deleteStage } from "./delete-stage/delete-stage.service"
 import { reorderStages } from "./reorder-stages/reorder-stages.service"
-import { DeleteStageQuery, PipelineIdParam, ReorderBody, StageCreate, StageResponse, StageUpdate } from "./shared/model"
+import { DeleteStageQuery, ReorderBody, StageCreate, StageResponse, StageUpdate } from "./shared/model"
 import { toStageResponse } from "./shared/serialize"
 import { updateStage } from "./update-stage/update-stage.service"
 
@@ -23,23 +26,23 @@ async function findStage(db: Parameters<typeof createStage>[0], id: string) {
 export const stages = new Elysia({ tags: ["Stages"] })
   .use(database)
   .post(
-    "/pipelines/:pipelineId/stages",
-    async ({ db, params: { pipelineId }, body, status }) => {
+    "/pipelines/:id/stages",
+    async ({ db, params: { id: pipelineId }, body, status }) => {
       const r = await createStage(db, pipelineId, body)
       if (!r.ok && r.reason === "pipeline_not_found") return status(404, { error: "not_found" })
       if (!r.ok) return status(422, { error: r.reason })
       return status(201, toStageResponse((await findStage(db, r.id))!))
     },
     {
-      params: PipelineIdParam,
+      params: IdParam,
       body: StageCreate,
       response: { 201: StageResponse, 404: ErrorResponse, 422: ErrorResponse },
       detail: { summary: "Cria uma coluna no fim do board (só 1 type=new por kanban)" },
     },
   )
   .patch(
-    "/pipelines/:pipelineId/stages/reorder",
-    async ({ db, params: { pipelineId }, body, status }) => {
+    "/pipelines/:id/stages/reorder",
+    async ({ db, params: { id: pipelineId }, body, status }) => {
       const r = await reorderStages(db, pipelineId, body.stageIds)
       if (!r.ok && r.reason === "pipeline_not_found") return status(404, { error: "not_found" })
       if (!r.ok) return status(422, { error: r.reason, ...(r.detail ? { detail: r.detail } : {}) })
@@ -50,7 +53,7 @@ export const stages = new Elysia({ tags: ["Stages"] })
       return rows.map(toStageResponse)
     },
     {
-      params: PipelineIdParam,
+      params: IdParam,
       body: ReorderBody,
       response: { 200: t.Array(StageResponse), 404: ErrorResponse, 422: ErrorResponse },
       detail: { summary: "Reordena as colunas (lista completa de ids na nova ordem)" },

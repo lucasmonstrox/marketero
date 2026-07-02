@@ -32,9 +32,6 @@ export const ReorderBody = t.Object({
   stageIds: t.Array(t.String({ format: "uuid" }), { minItems: 1, maxItems: 50 }),
 })
 
-/** Param do :pipelineId nas rotas aninhadas. */
-export const PipelineIdParam = t.Object({ pipelineId: t.String({ format: "uuid" }) })
-
 /** DELETE /stages/:id?moveCardsTo= — destino dos cards órfãos. */
 export const DeleteStageQuery = t.Object({
   moveCardsTo: t.Optional(t.String({ format: "uuid" })),

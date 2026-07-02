@@ -4,7 +4,7 @@ import { cn } from "@workspace/ui/lib/utils"
 
 import { ChannelIcon } from "@/shared/ui/channel-icon"
 
-import { ROBOT_META, type RobotType } from "../_data/pipelines"
+import { ROBOT_META, type RobotType } from "../_lib/automations"
 
 /**
  * Chip de ROBÔ (outbound): ação executada quando o card CHEGA/permanece na

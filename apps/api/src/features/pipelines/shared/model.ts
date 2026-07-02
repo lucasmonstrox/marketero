@@ -4,7 +4,7 @@
  */
 import { t } from "elysia"
 
-import { AccentSchema, StageTypeSchema } from "../../../shared/domain/model"
+import { AccentSchema, ChannelSchema, IntentSchema, StageTypeSchema } from "../../../shared/domain/model"
 
 /** Coluna inicial no create (position = índice do array). */
 const StageSeed = t.Object({
@@ -51,8 +51,8 @@ export const BoardCard = t.Object({
   contactId: t.String({ format: "uuid" }),
   title: t.String(),
   valueCents: t.Integer(),
-  channel: t.String(),
-  intent: t.Union([t.String(), t.Null()]),
+  channel: ChannelSchema,
+  intent: t.Union([IntentSchema, t.Null()]),
   tags: t.Array(t.String()),
   assignedTo: t.Union([t.String(), t.Null()]),
   enteredStageAt: t.Date(),

@@ -76,3 +76,12 @@ export function formatTime(date: DateInput): string {
 export function formatRelative(date: DateInput): string {
   return formatDistance(new Date(date), MOCK_NOW, { addSuffix: true, locale: ptBR })
 }
+
+/**
+ * "há 5 minutos" ancorado no relógio REAL — para dados vindos da API (funil).
+ * Só use em client components pós-mount (React Query): sem SSR do valor, não
+ * há risco de hydration mismatch.
+ */
+export function formatRelativeNow(date: DateInput): string {
+  return formatDistance(new Date(date), new Date(), { addSuffix: true, locale: ptBR })
+}
