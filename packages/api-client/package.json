@@ -1,0 +1,22 @@
+{
+  "name": "@workspace/api-client",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Cliente Eden Treaty tipado da API do Marketero (tipos end-to-end, zero codegen).",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@elysiajs/eden": "^1.4.0"
+  },
+  "devDependencies": {
+    "@workspace/api": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
+    "elysia": "^1.4.10",
+    "typescript": "^5"
+  }
+}

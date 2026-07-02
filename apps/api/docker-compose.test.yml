@@ -1,0 +1,22 @@
+# Postgres DEDICADO e EFÊMERO para os testes da API (@workspace/api).
+# Sobe/derruba automaticamente pelo harness (src/shared/testing) durante `bun test`.
+# Porta 54321 (≠ 54320 do dev) para NUNCA tocar o banco de desenvolvimento.
+#
+# tmpfs no data dir → IO em RAM (migrations + testes rápidos) e descartável de verdade.
+name: marketero-apitest
+services:
+  db-test:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: marketero
+      POSTGRES_PASSWORD: marketero
+      POSTGRES_DB: marketero
+    ports:
+      - "54321:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U marketero -d marketero"]
+      interval: 1s
+      timeout: 3s
+      retries: 30

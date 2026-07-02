@@ -1,0 +1,15 @@
+// Deploy Cloudflare Workers da API (quando sair do Bun local):
+//   bunx wrangler dev      (testa o caminho workerd na 8787)
+//   bunx wrangler deploy
+// Segredos locais em .dev.vars (DATABASE_URL). Em prod, o Hyperdrive injeta a
+// connection string (ver src/worker.ts).
+{
+  "name": "marketero-api",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-06-21",
+  "compatibility_flags": ["nodejs_compat"],
+  // Habilitar quando o Neon estiver provisionado:
+  // "hyperdrive": [{ "binding": "HYPERDRIVE", "id": "<id do hyperdrive>" }],
+  "vars": {},
+  "dev": { "port": 8787 }
+}

@@ -1,0 +1,5 @@
+# Preloads da suíte de testes — a ORDEM é load-bearing:
+#   env.ts   aponta DATABASE_URL pro banco de TESTE antes de qualquer import de @workspace/db
+#   setup.ts hooks globais (sobe container → migra → seed / derruba no fim)
+[test]
+preload = ["./src/shared/testing/env.ts", "./src/shared/testing/setup.ts"]

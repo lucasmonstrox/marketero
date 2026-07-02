@@ -1,0 +1,30 @@
+# Banco de DESENVOLVIMENTO do Marketero: Postgres 17.
+# Subir:   docker compose up -d
+# Parar:   docker compose down        (mantém os dados no volume)
+# Zerar:   docker compose down -v     (apaga os dados)
+#
+# Conexão (default do packages/db):
+#   postgres://marketero:marketero@127.0.0.1:54320/marketero
+#
+# Porta 54320 — o menupiloto ocupa 54330/54331 na mesma máquina; não colidir.
+services:
+  db:
+    image: postgres:17
+    container_name: marketero-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: marketero
+      POSTGRES_PASSWORD: marketero
+      POSTGRES_DB: marketero
+    ports:
+      - "54320:5432"
+    volumes:
+      - marketero-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U marketero -d marketero"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  marketero-pgdata:
